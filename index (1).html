@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио Художника</title>
+    <style>
+        :root {
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --bg: #0f0f13;
+            --card-bg: #1e1e24;
+            --text: #f1f2f6;
+            --text-muted: #a4b0be;
+            --input-bg: #2a2a32;
+            --comment-bg: #25252d;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #15151a 100%);
+            color: var(--text);
+            margin: 0; padding: 0; min-height: 100vh;
+        }
+
+        /* ===== АНИМАЦИИ ===== */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== ШАПКА ===== */
+        header {
+            padding: 40px 50px;
+            background: rgba(30, 30, 36, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; align-items: flex-start;
+            animation: fadeIn 0.8s ease-out;
+            position: sticky; top: 0; z-index: 50;
+        }
+
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; margin-bottom: 30px; }
+        .branding-row { display: flex; align-items: center; gap: 20px; }
+        .site-avatar {
+            width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .site-avatar:hover { transform: rotate(5deg) scale(1.05); }
+        .site-info h1 { margin: 0; font-size: 32px; font-weight: 800; letter-spacing: 1px; }
+        .site-info p { margin: 5px 0 0; color: var(--text-muted); font-size: 16px; }
+
+        /* ===== AUTH ЗОНА ===== */
+        .auth-zone { display: flex; align-items: center; gap: 12px; }
+        .user-badge {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--card-bg); padding: 8px 16px; border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .user-badge img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .user-badge .username { font-size: 14px; font-weight: 600; }
+        .admin-badge {
+            background: linear-gradient(135deg, var(--primary), #ff6b35);
+            color: white; font-size: 10px; font-weight: 700;
+            padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* ===== КНОПКИ ===== */
+        .btn {
+            padding: 12px 24px; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 700; font-size: 14px;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; border: 2px solid var(--text-muted); color: var(--text); }
+        .btn-secondary:hover { border-color: white; color: white; }
+        .btn-ghost { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+        .btn-danger { background: transparent; border: 2px solid #e74c3c; color: #e74c3c; }
+        .btn-danger:hover { background: #e74c3c; color: white; }
+        .btn-sm { padding: 8px 16px; font-size: 12px; }
+        .btn-admin { background: linear-gradient(135deg, #f39c12, #e67e22); color: white; }
+        .btn-admin:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* ===== ТАБЫ ===== */
+        .tabs { display: flex; gap: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            background: transparent; color: var(--text-muted);
+            border: none; font-size: 20px; font-weight: 600;
+            cursor: pointer; padding: 10px 0;
+            position: relative; transition: color 0.3s ease;
+        }
+        .tab-btn::after {
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 0; height: 3px; background: var(--primary);
+            transition: width 0.3s ease; border-radius: 3px;
+        }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { width: 100%; }
+
+        /* ===== ГАЛЕРЕЯ ===== */
+        .gallery-wrapper { padding: 40px 50px; transition: filter 0.5s ease; }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .art-card {
+            background: var(--card-bg); border-radius: 12px; overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            animation: fadeIn 0.5s ease-out backwards;
+            cursor: pointer;
+        }
+        .art-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 71, 87, 0.2);
+        }
+        .art-card-img { width: 100%; height: 320px; object-fit: cover; transition: transform 0.5s ease; display: block; }
+        .art-card:hover .art-card-img { transform: scale(1.05); }
+
+        .art-card-info {
+            padding: 15px 18px;
+            background: rgba(0,0,0,0.3);
+        }
+        .art-card-title { font-size: 15px; font-weight: 600; margin: 0 0 6px; }
+        .art-card-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; align-items: center; }
+        .art-card-meta span { display: flex; align-items: center; gap: 4px; }
+
+        /* Кнопка удаления на карточке (только для админа) */
+        .art-card-delete {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(231, 76, 60, 0.85); color: white;
+            border: none; border-radius: 6px; padding: 6px 10px;
+            cursor: pointer; font-size: 16px;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .art-card:hover .art-card-delete { opacity: 1; }
+
+        .blurred-gallery { filter: blur(35px) grayscale(50%); pointer-events: none; user-select: none; }
+
+        /* ===== СОСТОЯНИЕ ЗАГРУЗКИ / ПУСТО ===== */
+        .loader {
+            text-align: center; padding: 60px;
+            color: var(--text-muted); font-size: 16px;
+        }
+        .loader .spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(255,71,87,0.3);
+            border-top-color: var(--primary); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        }
+        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+        .empty-state .icon { font-size: 64px; margin-bottom: 16px; }
+        .empty-state p { font-size: 18px; }
+
+        /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            z-index: 100; justify-content: center; align-items: center; padding: 20px;
+            overflow-y: auto;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--card-bg); padding: 50px;
+            border-radius: 16px; max-width: 650px; width: 100%;
+            text-align: center; border: 1px solid rgba(255, 71, 87, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; margin: auto;
+        }
+        .modal-content h2 { font-size: 28px; margin-top: 0; color: var(--primary); }
+        .modal-content p { font-size: 16px; color: #ccc; line-height: 1.6; }
+
+        .modal-close {
+            position: absolute; top: 16px; right: 20px;
+            background: none; border: none; color: var(--text-muted);
+            font-size: 24px; cursor: pointer; line-height: 1;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--primary); }
+
+        .btn-group { display: flex; justify-content: center; gap: 15px; margin-top: 30px; flex-wrap: wrap; }
+
+        .policy-link {
+            color: var(--text-muted); text-decoration: none; border-bottom: 1px dashed var(--text-muted);
+            cursor: pointer; display: inline-block; margin-top: 25px; font-size: 15px; transition: color 0.3s;
+        }
+        .policy-link:hover { color: var(--primary); border-color: var(--primary); }
+        .policy-text {
+            text-align: left; font-size: 15px; line-height: 1.7;
+            color: #dcdde1; max-height: 45vh; overflow-y: auto;
+            padding: 20px; background: rgba(0,0,0,0.3); border-radius: 8px; margin-bottom: 25px;
+        }
+        .policy-text::-webkit-scrollbar { width: 8px; }
+        .policy-text::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .policy-text::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        /* ===== AUTH МОДАЛКА ===== */
+        .auth-form { text-align: left; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input {
+            width: 100%; padding: 14px 16px;
+            background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; color: var(--text); font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .form-error { color: #e74c3c; font-size: 13px; margin-top: 8px; display: none; }
+        .auth-switch { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 14px; }
+        .auth-switch a { color: var(--primary); cursor: pointer; text-decoration: none; font-weight: 600; }
+        .auth-switch a:hover { text-decoration: underline; }
+
+        /* ===== МОДАЛКА ПРОСМОТРА АРТА ===== */
+        .art-view-modal { max-width: 900px; text-align: left; padding: 0; overflow: hidden; }
+        .art-view-modal .art-image {
+            width: 100%; max-height: 60vh; object-fit: contain;
+            background: #000; display: block;
+        }
+        .art-view-body { padding: 30px; }
+        .art-view-title { font-size: 24px; font-weight: 800; margin: 0 0 8px; }
+        .art-view-meta { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+        /* ===== КОММЕНТАРИИ ===== */
+        .comments-section { margin-top: 0; }
+        .comments-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .comments-list { max-height: 220px; overflow-y: auto; margin-bottom: 16px; }
+        .comments-list::-webkit-scrollbar { width: 5px; }
+        .comments-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+        .comment-item {
+            display: flex; gap: 12px; padding: 12px;
+            background: var(--comment-bg); border-radius: 8px; margin-bottom: 10px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,71,87,0.3); }
+        .comment-body { flex: 1; }
+        .comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .comment-author { font-weight: 700; font-size: 13px; color: var(--primary); }
+        .comment-date { font-size: 11px; color: var(--text-muted); }
+        .comment-text { font-size: 14px; line-height: 1.5; color: var(--text); }
+        .comment-delete-btn {
+            background: none; border: none; color: #e74c3c; cursor: pointer;
+            font-size: 14px; padding: 2px 6px; border-radius: 4px; opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        .comment-delete-btn:hover { opacity: 1; }
+        .comment-form { display: flex; gap: 10px; }
+        .comment-input {
+            flex: 1; padding: 12px 16px;
+            background: var(--input-bg); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; color: var(--text); font-size: 14px; resize: none;
+            transition: border-color 0.3s; font-family: inherit;
+        }
+        .comment-input:focus { outline: none; border-color: var(--primary); }
+        .no-comments { color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px; }
+        .login-to-comment { text-align: center; padding: 16px; background: var(--input-bg); border-radius: 8px; font-size: 14px; color: var(--text-muted); }
+        .login-to-comment a { color: var(--primary); cursor: pointer; font-weight: 600; }
+
+        /* ===== УВЕДОМЛЕНИЯ ===== */
+        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 10px; }
+        .toast {
+            background: var(--card-bg); color: var(--text);
+            padding: 14px 20px; border-radius: 10px; font-size: 14px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease-out;
+            max-width: 320px;
+        }
+        .toast.success { border-color: #2ecc71; }
+        .toast.error { border-color: #e74c3c; }
+        .toast.info { border-color: #3498db; }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 768px) {
+            header { padding: 24px 20px; }
+            .gallery-wrapper { padding: 24px 20px; }
+            .site-info h1 { font-size: 22px; }
+            .site-avatar { width: 70px; height: 70px; }
+            .tab-btn { font-size: 16px; }
+            .modal-content { padding: 30px 20px; }
+            .header-top { flex-direction: column; gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="branding-row">
+                <img src="https://placehold.co/200x200/ff4757/white?text=AV" alt="Аватарка" class="site-avatar" id="siteAvatar">
+                <div class="site-info">
+                    <h1>Имя Художницы</h1>
+                    <p>Digital Artist / Illustrator</p>
+                </div>
+            </div>
+            <div class="auth-zone" id="authZone">
+                <button class="btn btn-primary btn-sm" id="btnOpenAuth">Войти</button>
+            </div>
+        </div>
+        <div class="tabs" id="tabsContainer">
+            <!-- Табы загружаются динамически -->
+        </div>
+    </header>
+
+    <div class="gallery-wrapper" id="galleryWrapper">
+        <div class="gallery" id="gallery">
+            <div class="loader">
+                <div class="spinner"></div>
+                Загружаем арты...
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА: ВОЗРАСТНОЕ СОГЛАШЕНИЕ ===== -->
+    <div class="modal-overlay" id="modalAgreement">
+        <div class="modal-content">
+            <h2>🔞 Внимание: Контент 18+</h2>
+            <p>Вы переходите в закрытый раздел. Нажимая кнопку согласия, вы подтверждаете, что вам есть 18 лет и вы ознакомлены с правилами сайта.</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" id="btnAgree">Мне есть 18 лет</button>
+                <button class="btn btn-secondary" id="btnCancel">Отмена</button>
+            </div>
+            <span class="policy-link" id="linkPolicy">Читать полное пользовательское соглашение</span>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА: ПОЛИТИКА ===== -->
+    <div class="modal-overlay" id="modalPolicy">
+        <div class="modal-content" style="max-width: 800px;">
+            <h2>Политика конфиденциальности и контента</h2>
+            <div class="policy-text">
+                <p>Настоящий раздел галереи является закрытым и предназначен исключительно для совершеннолетних пользователей.</p>
+                <p><strong>1. Возрастное ограничение:</strong> Вы официально подтверждаете, что достигли возраста 18 лет.</p>
+                <p><strong>2. Характер контента:</strong> В данном разделе размещены материалы откровенного характера (NSFW/NSFL). Работы могут включать:</p>
+                <ul>
+                    <li>Сцены сексуального характера и наготу.</li>
+                    <li>Изображение однополых отношений, а также трансгендерных персон и квир-тематику.</li>
+                    <li><strong>Сцены жестокости и насилия</strong>, включая кровь, телесные повреждения и элементы гуро.</li>
+                </ul>
+                <p><strong>3. Отказ от ответственности:</strong> Если данные темы для вас неприемлемы — немедленно закройте раздел. Автор снимает с себя всю ответственность.</p>
+            </div>
+            <button class="btn btn-primary" id="btnClosePolicy">Я прочитал(а) и понимаю</button>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА: АВТОРИЗАЦИЯ ===== -->
+    <div class="modal-overlay" id="modalAuth">
+        <div class="modal-content" style="max-width: 480px; text-align: left;">
+            <button class="modal-close" id="btnCloseAuth">✕</button>
+            <h2 style="text-align:center;" id="authTitle">Вход в аккаунт</h2>
+
+            <div class="auth-form" id="authForm">
+                <div class="form-group" id="nicknameGroup" style="display:none;">
+                    <label>Никнейм</label>
+                    <input type="text" id="inputNickname" placeholder="Ваш никнейм" maxlength="32">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="inputEmail" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="inputPassword" placeholder="Минимум 6 символов">
+                    <div class="form-error" id="authError">Ошибка авторизации</div>
+                </div>
+                <button class="btn btn-primary" style="width:100%;" id="btnAuthSubmit">Войти</button>
+                <div class="auth-switch">
+                    Нет аккаунта? <a id="authSwitchLink">Зарегистрироваться</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛКА: ПРОСМОТР АРТА ===== -->
+    <div class="modal-overlay" id="modalArt">
+        <div class="modal-content art-view-modal">
+            <button class="modal-close" style="top:12px;right:12px;" id="btnCloseArt">✕</button>
+            <img class="art-image" id="artViewImg" src="" alt="">
+            <div class="art-view-body">
+                <h2 class="art-view-title" id="artViewTitle"></h2>
+                <div class="art-view-meta" id="artViewMeta"></div>
+
+                <!-- Комментарии -->
+                <div class="comments-section">
+                    <h3>💬 Комментарии</h3>
+                    <div class="comments-list" id="commentsList">
+                        <div class="loader"><div class="spinner"></div></div>
+                    </div>
+                    <div id="commentFormWrap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import {
+            getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+            onAuthStateChanged, signOut, updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import {
+            getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc,
+            query, where, orderBy, onSnapshot, serverTimestamp, setDoc
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // ===== FIREBASE CONFIG =====
+        const firebaseConfig = {
+            apiKey: "ВАШ_API_KEY",
+            authDomain: "ВАШ_PROJECT.firebaseapp.com",
+            projectId: "ВАШ_PROJECT_ID",
+            storageBucket: "ВАШ_PROJECT.firebasestorage.app",
+            messagingSenderId: "ВАШ_SENDER_ID",
+            appId: "ВАШ_APP_ID"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ===== СОСТОЯНИЕ =====
+        let currentUser = null;
+        let isAdmin = false;
+        let isAdultUser = localStorage.getItem('isAdultUser') === 'true';
+        let currentTab = 'safe';
+        let allTabs = [{ id: 'safe', label: 'Простые арты', nsfw: false }];
+        let isLoginMode = true;
+        let currentArtId = null;
+        let commentsUnsubscribe = null;
+
+        // ===== ЭЛЕМЕНТЫ =====
+        const authZone = document.getElementById('authZone');
+        const tabsContainer = document.getElementById('tabsContainer');
+        const gallery = document.getElementById('gallery');
+        const galleryWrapper = document.getElementById('galleryWrapper');
+
+        // === Модалки ===
+        const modalAgreement = document.getElementById('modalAgreement');
+        const modalPolicy = document.getElementById('modalPolicy');
+        const modalAuth = document.getElementById('modalAuth');
+        const modalArt = document.getElementById('modalArt');
+
+        // ===== ТОСТЫ (уведомления) =====
+        function showToast(msg, type = 'info') {
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            t.textContent = msg;
+            document.getElementById('toastContainer').appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        // ===== ЗАГРУЗКА ТАБОВ ИЗ FIRESTORE =====
+        async function loadTabs() {
+            try {
+                const snap = await getDocs(query(collection(db, 'tabs'), orderBy('order', 'asc')));
+                if (!snap.empty) {
+                    allTabs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                }
+            } catch (e) {
+                // Если табов нет в БД — используем дефолтный
+            }
+            renderTabs();
+        }
+
+        function renderTabs() {
+            tabsContainer.innerHTML = '';
+            allTabs.forEach((tab, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (tab.id === currentTab ? ' active' : '');
+                btn.textContent = tab.label;
+                btn.dataset.tabId = tab.id;
+                btn.dataset.nsfw = tab.nsfw;
+                btn.onclick = () => switchTab(tab.id, tab.nsfw);
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function switchTab(tabId, isNsfw) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.tabId === tabId);
+            });
+            loadGallery();
+            if (isNsfw && !isAdultUser) {
+                galleryWrapper.classList.add('blurred-gallery');
+                modalAgreement.classList.add('active');
+            } else {
+                galleryWrapper.classList.remove('blurred-gallery');
+            }
+        }
+
+        // ===== ЗАГРУЗКА ГАЛЕРЕИ =====
+        async function loadGallery() {
+            gallery.innerHTML = '<div class="loader"><div class="spinner"></div>Загружаем...</div>';
+            try {
+                const q = query(
+                    collection(db, 'arts'),
+                    where('tabId', '==', currentTab),
+                    orderBy('createdAt', 'desc')
+                );
+                const snap = await getDocs(q);
+                gallery.innerHTML = '';
+
+                if (snap.empty) {
+                    gallery.innerHTML = `
+                        <div class="empty-state" style="grid-column:1/-1;">
+                            <div class="icon">🎨</div>
+                            <p>Здесь пока нет артов</p>
+                        </div>`;
+                    return;
+                }
+
+                snap.docs.forEach((docSnap, i) => {
+                    const art = { id: docSnap.id, ...docSnap.data() };
+                    const card = document.createElement('div');
+                    card.className = 'art-card';
+                    card.style.animationDelay = `${i * 0.08}s`;
+                    card.innerHTML = `
+                        <img class="art-card-img" src="${art.imageUrl}" alt="${art.title || 'Art'}" loading="lazy">
+                        ${isAdmin ? `<button class="art-card-delete" title="Удалить" data-id="${art.id}">🗑</button>` : ''}
+                        <div class="art-card-info">
+                            <div class="art-card-title">${art.title || 'Без названия'}</div>
+                            <div class="art-card-meta">
+                                <span>💬 ${art.commentsCount || 0}</span>
+                                <span>${art.createdAt ? formatDate(art.createdAt.toDate()) : ''}</span>
+                            </div>
+                        </div>
+                    `;
+                    card.onclick = (e) => {
+                        if (e.target.classList.contains('art-card-delete')) return;
+                        openArtModal(art);
+                    };
+                    if (isAdmin) {
+                        card.querySelector('.art-card-delete').onclick = (e) => {
+                            e.stopPropagation();
+                            deleteArt(art.id);
+                        };
+                    }
+                    gallery.appendChild(card);
+                });
+            } catch (e) {
+                gallery.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><p>Ошибка загрузки 😢</p></div>`;
+                console.error(e);
+            }
+        }
+
+        async function deleteArt(artId) {
+            if (!confirm('Удалить этот арт?')) return;
+            try {
+                await deleteDoc(doc(db, 'arts', artId));
+                showToast('Арт удалён', 'success');
+                loadGallery();
+            } catch (e) {
+                showToast('Ошибка удаления', 'error');
+            }
+        }
+
+        // ===== ПРОСМОТР АРТА + КОММЕНТАРИИ =====
+        function openArtModal(art) {
+            currentArtId = art.id;
+            document.getElementById('artViewImg').src = art.imageUrl;
+            document.getElementById('artViewTitle').textContent = art.title || 'Без названия';
+            document.getElementById('artViewMeta').textContent =
+                art.createdAt ? `Опубликовано: ${formatDate(art.createdAt.toDate())}` : '';
+            modalArt.classList.add('active');
+            loadComments(art.id);
+        }
+
+        function loadComments(artId) {
+            if (commentsUnsubscribe) commentsUnsubscribe();
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+
+            const q = query(
+                collection(db, 'arts', artId, 'comments'),
+                orderBy('createdAt', 'asc')
+            );
+
+            commentsUnsubscribe = onSnapshot(q, (snap) => {
+                list.innerHTML = '';
+                if (snap.empty) {
+                    list.innerHTML = '<div class="no-comments">Комментариев пока нет. Будь первым!</div>';
+                } else {
+                    snap.docs.forEach(d => {
+                        const c = d.data();
+                        const item = document.createElement('div');
+                        item.className = 'comment-item';
+                        item.innerHTML = `
+                            <img class="comment-avatar" src="${c.userAvatar || 'https://placehold.co/40x40/1e1e24/a4b0be?text=' + (c.userName?.[0] || '?')}" alt="">
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <span class="comment-author">${c.userName || 'Аноним'}</span>
+                                    <div style="display:flex;align-items:center;gap:8px;">
+                                        <span class="comment-date">${c.createdAt ? formatDate(c.createdAt.toDate()) : ''}</span>
+                                        ${(isAdmin || (currentUser && currentUser.uid === c.userId)) ?
+                                            `<button class="comment-delete-btn" data-cid="${d.id}" title="Удалить">✕</button>` : ''}
+                                    </div>
+                                </div>
+                                <div class="comment-text">${escapeHtml(c.text)}</div>
+                            </div>
+                        `;
+                        if (isAdmin || (currentUser && currentUser.uid === c.userId)) {
+                            item.querySelector('.comment-delete-btn').onclick = () => deleteComment(artId, d.id);
+                        }
+                        list.appendChild(item);
+                    });
+                    list.scrollTop = list.scrollHeight;
+                }
+            });
+
+            // Форма комментария
+            const wrap = document.getElementById('commentFormWrap');
+            if (currentUser) {
+                wrap.innerHTML = `
+                    <div class="comment-form">
+                        <textarea class="comment-input" id="commentInput" rows="2" placeholder="Написать комментарий..."></textarea>
+                        <button class="btn btn-primary btn-sm" id="btnSendComment">➤</button>
+                    </div>
+                `;
+                document.getElementById('btnSendComment').onclick = sendComment;
+                document.getElementById('commentInput').onkeydown = (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); }
+                };
+            } else {
+                wrap.innerHTML = `
+                    <div class="login-to-comment">
+                        <a id="loginToCommentBtn">Войдите</a>, чтобы оставить комментарий
+                    </div>
+                `;
+                document.getElementById('loginToCommentBtn').onclick = () => {
+                    modalArt.classList.remove('active');
+                    openAuthModal();
+                };
+            }
+        }
+
+        async function sendComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text || !currentUser || !currentArtId) return;
+            input.value = '';
+            try {
+                await addDoc(collection(db, 'arts', currentArtId, 'comments'), {
+                    text,
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || 'Аноним',
+                    userAvatar: currentUser.photoURL || '',
+                    createdAt: serverTimestamp()
+                });
+            } catch (e) {
+                showToast('Ошибка отправки', 'error');
+            }
+        }
+
+        async function deleteComment(artId, commentId) {
+            try {
+                await deleteDoc(doc(db, 'arts', artId, 'comments', commentId));
+                showToast('Комментарий удалён', 'success');
+            } catch (e) {
+                showToast('Ошибка', 'error');
+            }
+        }
+
+        // ===== АВТОРИЗАЦИЯ =====
+        function openAuthModal(loginMode = true) {
+            isLoginMode = loginMode;
+            modalAuth.classList.add('active');
+            updateAuthForm();
+        }
+
+        function updateAuthForm() {
+            document.getElementById('authTitle').textContent = isLoginMode ? 'Вход в аккаунт' : 'Регистрация';
+            document.getElementById('btnAuthSubmit').textContent = isLoginMode ? 'Войти' : 'Создать аккаунт';
+            document.getElementById('authSwitchLink').textContent = isLoginMode ? 'Зарегистрироваться' : 'Уже есть аккаунт';
+            document.getElementById('nicknameGroup').style.display = isLoginMode ? 'none' : 'block';
+            document.getElementById('authError').style.display = 'none';
+        }
+
+        document.getElementById('authSwitchLink').onclick = () => {
+            isLoginMode = !isLoginMode;
+            updateAuthForm();
+        };
+
+        document.getElementById('btnAuthSubmit').onclick = async () => {
+            const email = document.getElementById('inputEmail').value.trim();
+            const password = document.getElementById('inputPassword').value;
+            const nickname = document.getElementById('inputNickname').value.trim();
+            const errorEl = document.getElementById('authError');
+            errorEl.style.display = 'none';
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    if (!nickname) { errorEl.textContent = 'Введите никнейм'; errorEl.style.display = 'block'; return; }
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    await updateProfile(cred.user, { displayName: nickname });
+                    // Создаём документ пользователя в Firestore
+                    await setDoc(doc(db, 'users', cred.user.uid), {
+                        uid: cred.user.uid,
+                        email,
+                        displayName: nickname,
+                        admin: false,
+                        createdAt: serverTimestamp()
+                    });
+                }
+                modalAuth.classList.remove('active');
+                showToast(isLoginMode ? 'Добро пожаловать!' : 'Аккаунт создан!', 'success');
+            } catch (e) {
+                const msgs = {
+                    'auth/user-not-found': 'Пользователь не найден',
+                    'auth/wrong-password': 'Неверный пароль',
+                    'auth/email-already-in-use': 'Email уже занят',
+                    'auth/weak-password': 'Пароль слишком короткий',
+                    'auth/invalid-email': 'Неверный формат email',
+                    'auth/invalid-credential': 'Неверный email или пароль',
+                };
+                errorEl.textContent = msgs[e.code] || e.message;
+                errorEl.style.display = 'block';
+            }
+        };
+
+        // ===== AUTH STATE =====
+        onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
+            isAdmin = false;
+
+            if (user) {
+                // Проверяем флаг admin в Firestore
+                try {
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists()) isAdmin = userDoc.data().admin === true;
+                } catch (e) {}
+
+                const avatarLetter = (user.displayName || user.email)?.[0]?.toUpperCase() || '?';
+                authZone.innerHTML = `
+                    <div class="user-badge">
+                        <img src="${user.photoURL || `https://placehold.co/40x40/ff4757/white?text=${avatarLetter}`}" alt="">
+                        <span class="username">${user.displayName || user.email}</span>
+                        ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
+                    </div>
+                    ${isAdmin ? `<button class="btn btn-admin btn-sm" id="btnAdminPanel">⚙ Панель</button>` : ''}
+                    <button class="btn btn-ghost btn-sm" id="btnLogout">Выйти</button>
+                `;
+                document.getElementById('btnLogout').onclick = async () => {
+                    await signOut(auth);
+                    showToast('Вы вышли из аккаунта', 'info');
+                };
+                if (isAdmin) {
+                    document.getElementById('btnAdminPanel').onclick = () => {
+                        window.location.href = 'admin.html';
+                    };
+                }
+            } else {
+                authZone.innerHTML = `<button class="btn btn-primary btn-sm" id="btnOpenAuth">Войти</button>`;
+                document.getElementById('btnOpenAuth').onclick = () => openAuthModal();
+            }
+
+            loadGallery();
+        });
+
+        // ===== ВОЗРАСТНЫЕ МОДАЛКИ =====
+        document.getElementById('btnAgree').onclick = () => {
+            localStorage.setItem('isAdultUser', 'true');
+            isAdultUser = true;
+            modalAgreement.classList.remove('active');
+            galleryWrapper.classList.remove('blurred-gallery');
+        };
+        document.getElementById('btnCancel').onclick = () => {
+            modalAgreement.classList.remove('active');
+            switchTab('safe', false);
+        };
+        document.getElementById('linkPolicy').onclick = () => {
+            modalAgreement.classList.remove('active');
+            modalPolicy.classList.add('active');
+        };
+        document.getElementById('btnClosePolicy').onclick = () => {
+            modalPolicy.classList.remove('active');
+            modalAgreement.classList.add('active');
+        };
+
+        // ===== ЗАКРЫТИЕ МОДАЛОК =====
+        document.getElementById('btnCloseAuth').onclick = () => modalAuth.classList.remove('active');
+        document.getElementById('btnCloseArt').onclick = () => {
+            modalArt.classList.remove('active');
+            if (commentsUnsubscribe) { commentsUnsubscribe(); commentsUnsubscribe = null; }
+        };
+        [modalAuth, modalArt].forEach(m => {
+            m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('active'); });
+        });
+
+        // ===== ВСПОМОГАТЕЛЬНЫЕ =====
+        function formatDate(date) {
+            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        function escapeHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        // ===== ЗАПУСК =====
+        document.getElementById('btnOpenAuth')?.addEventListener('click', () => openAuthModal());
+        await loadTabs();
+        loadGallery();
+    </script>
+</body>
+</html>
