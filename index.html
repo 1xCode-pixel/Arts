@@ -8,9 +8,9 @@
     
     <style>
         :root {
-            --primary: #ff007f; /* Неоново-розовый */
+            --primary: #ff007f;
             --primary-hover: #ff3399;
-            --bg: #050505; /* Глубокий черный */
+            --bg: #050505;
             --card-bg: #111111;
             --text: #f1f2f6;
             --text-muted: #6a6a78;
@@ -20,94 +20,57 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
 
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: var(--bg); color: var(--text);
-            margin: 0; padding: 0; min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ===== АНИМАЦИИ ===== */
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 10px rgba(255,0,127,0.3); } 50% { box-shadow: var(--glow); } 100% { box-shadow: 0 0 10px rgba(255,0,127,0.3); } }
 
-        /* ===== ШАПКА ===== */
+        /* --- ШАПКА --- */
         header {
             padding: 25px 50px; background: rgba(5, 5, 5, 0.85); backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 0, 127, 0.1);
-            display: flex; flex-direction: column; align-items: flex-start;
             position: sticky; top: 0; z-index: 50; animation: fadeIn 0.8s ease-out;
         }
 
         .header-top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 25px; }
         .branding-row { display: flex; align-items: center; gap: 20px; }
-        .site-avatar {
-            width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
-            border: 2px solid var(--primary); box-shadow: var(--glow);
-            transition: 0.3s ease;
-        }
+        .site-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); box-shadow: var(--glow); transition: 0.3s ease; }
         .site-avatar:hover { transform: scale(1.05) rotate(5deg); }
         .site-info h1 { margin: 0; font-family: 'Caveat', cursive; font-size: 38px; color: #fff; text-shadow: 0 0 10px rgba(255,0,127,0.5); }
-        .site-info p { margin: 2px 0 0; color: var(--text-muted); font-size: 15px; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* ===== AUTH ЗОНА ===== */
+        /* --- AUTH ЗОНА --- */
         .auth-zone { display: flex; align-items: center; gap: 12px; }
-        .user-badge {
-            display: flex; align-items: center; gap: 10px; background: var(--card-bg);
-            padding: 6px 14px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05);
-        }
-        .user-badge img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid var(--primary); }
+        .user-badge { display: flex; align-items: center; gap: 10px; background: var(--card-bg); padding: 6px 14px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05); }
         .user-badge .username { font-size: 14px; font-weight: 600; }
-        .admin-badge { background: var(--primary); color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; box-shadow: var(--glow); }
+        .admin-badge { background: var(--primary); color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; box-shadow: var(--glow); cursor: pointer; transition: 0.3s;}
+        .admin-badge:hover { transform: scale(1.1); }
 
-        /* ===== КНОПКИ (КРАСИВЫЕ) ===== */
-        .btn {
-            padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; font-family: 'Outfit'; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; letter-spacing: 1px;
-        }
+        /* --- КНОПКИ --- */
+        .btn { padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; font-family: 'Outfit'; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
         .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(255, 0, 127, 0.4); }
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: var(--glow); }
         .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.1); color: var(--text); }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); box-shadow: inset 0 0 10px rgba(255,0,127,0.2); }
         .btn-sm { padding: 8px 16px; font-size: 12px; border-radius: 8px; }
 
-        /* ===== ПАНЕЛЬ АДМИНА ===== */
-        #admin-panel {
-            display: none; margin: 30px auto 0; max-width: 800px; width: 90%;
-            padding: 25px; background: var(--card-bg); border: 1px solid rgba(255,0,127,0.3);
-            border-radius: 16px; text-align: center; animation: fadeIn 0.5s; box-shadow: inset 0 0 20px rgba(255,0,127,0.05);
-        }
-        .admin-controls { display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;}
-        .admin-input { padding: 14px; background: var(--input-bg); color: white; border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; font-family: 'Outfit'; outline: none; transition: 0.3s; }
-        .admin-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,0,127,0.2); }
-
-        /* ===== ТАБЫ ===== */
-        .tabs { display: flex; justify-content: center; gap: 30px; margin-top: 10px;}
-        .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 18px; font-weight: 600; cursor: pointer; padding: 10px 0; position: relative; transition: 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+        /* --- ТАБЫ --- */
+        .tabs { display: flex; justify-content: center; gap: 30px; margin-top: 10px; flex-wrap: wrap;}
+        .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 16px; font-weight: 600; cursor: pointer; padding: 10px 0; position: relative; transition: 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
         .tab-btn::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 2px; background: var(--primary); transition: width 0.3s ease; box-shadow: var(--glow); }
         .tab-btn:hover { color: var(--text); }
         .tab-btn.active { color: #fff; }
         .tab-btn.active::after { width: 100%; }
 
-        /* ===== ГАЛЕРЕЯ ===== */
+        /* --- ГАЛЕРЕЯ --- */
         .gallery-wrapper { padding: 40px 50px; transition: filter 0.5s ease; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
-
-        .art-card {
-            background: var(--card-bg); border-radius: 16px; overflow: hidden; position: relative; cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.03); transition: 0.4s; animation: fadeIn 0.5s backwards;
-        }
+        .art-card { background: var(--card-bg); border-radius: 16px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.03); transition: 0.4s; animation: fadeIn 0.5s backwards; }
         .art-card:hover { transform: translateY(-8px); border-color: rgba(255,0,127,0.5); box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(255,0,127,0.2); }
         .art-card-img { width: 100%; height: 350px; object-fit: cover; transition: 0.5s; display: block; }
         .art-card:hover .art-card-img { transform: scale(1.05); }
-
         .art-card-info { padding: 15px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); position: absolute; bottom: 0; width: 100%; opacity: 0; transition: 0.3s; }
         .art-card:hover .art-card-info { opacity: 1; }
         .art-card-meta { font-size: 16px; color: #fff; display: flex; gap: 20px; align-items: center; justify-content: center; font-weight: bold;}
-        .art-card-meta span { display: flex; align-items: center; gap: 5px; }
-
-        /* Спец-лайк художника (неон) */
         .artist-liked-icon { color: var(--primary) !important; text-shadow: var(--glow) !important; }
 
         .btn-delete { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 16px; z-index: 10; opacity: 0; transition: 0.3s; backdrop-filter: blur(5px); }
@@ -115,52 +78,53 @@
         .btn-delete:hover { background: #e74c3c; border-color: #e74c3c; }
 
         .blurred-gallery { filter: blur(35px) brightness(0.4); pointer-events: none; user-select: none; }
-        .loader { text-align: center; padding: 60px; color: var(--text-muted); grid-column: 1/-1;}
-        .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); grid-column: 1/-1;}
+        .loader, .empty-state { text-align: center; padding: 60px; color: var(--text-muted); grid-column: 1/-1;}
 
-        /* ===== МОДАЛЬНЫЕ ОКНА ===== */
+        /* --- МОДАЛКИ (ОБЩЕЕ) --- */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: var(--card-bg); padding: 40px; border-radius: 20px; max-width: 500px; width: 100%;
-            border: 1px solid rgba(255,0,127,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255,0,127,0.1);
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; margin: auto; text-align: center;
-        }
+        .modal-content { background: var(--card-bg); padding: 40px; border-radius: 20px; max-width: 500px; width: 100%; border: 1px solid rgba(255,0,127,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(255,0,127,0.1); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; margin: auto; text-align: center; }
         .modal-content h2 { font-size: 26px; margin-top: 0; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); font-size: 20px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .modal-close { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); font-size: 20px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; z-index: 10;}
         .modal-close:hover { background: var(--primary); color: white; box-shadow: var(--glow); }
 
-        /* ===== AUTH ФОРМА ===== */
+        /* --- АДМИН ПАНЕЛЬ (МОДАЛКА) --- */
+        .admin-section { background: var(--input-bg); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); text-align: left;}
+        .admin-section h3 { margin: 0 0 15px 0; font-size: 16px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px;}
+        .admin-input { width: 100%; padding: 12px; background: #000; color: white; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-family: 'Outfit'; outline: none; transition: 0.3s; margin-bottom: 10px;}
+        .admin-input:focus { border-color: var(--primary); }
+        .tab-list-admin { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;}
+        .tab-item-admin { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 10px 15px; border-radius: 8px; font-size: 14px;}
+        .tab-item-admin span { color: white; }
+        .tab-item-admin button { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 16px;}
+
+        /* --- AUTH ФОРМА --- */
         .auth-form { text-align: left; margin-top: 25px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        .form-group input { width: 100%; padding: 14px 16px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; color: var(--text); font-size: 16px; font-family: 'Outfit'; transition: 0.3s; }
-        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 10px rgba(255,0,127,0.2); }
+        .form-group input { width: 100%; padding: 14px 16px; background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; color: var(--text); font-size: 16px; font-family: 'Outfit'; outline: none; transition: 0.3s;}
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,0,127,0.2); }
         .form-error { color: var(--primary); font-size: 13px; margin-top: 8px; display: none; text-shadow: 0 0 5px rgba(255,0,127,0.5); }
         .auth-switch { text-align: center; margin-top: 25px; color: var(--text-muted); font-size: 14px; }
         .auth-switch a { color: var(--primary); cursor: pointer; font-weight: 700; transition: 0.2s; }
-        .auth-switch a:hover { text-shadow: var(--glow); }
 
-        /* ===== МОДАЛКА ПРОСМОТРА АРТА ===== */
+        /* --- МОДАЛКА ПРОСМОТРА АРТА --- */
         .art-view-modal { max-width: 1000px; padding: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--bg); border: 1px solid rgba(255,255,255,0.05);}
-        .art-view-img-wrap { width: 100%; background: #000; position: relative; display: flex; justify-content: center; align-items: center;}
+        .art-view-img-wrap { width: 100%; background: #000; display: flex; justify-content: center; align-items: center;}
         .art-view-modal .art-image { width: 100%; max-height: 65vh; object-fit: contain; display: block; }
         .art-view-body { padding: 30px; background: var(--card-bg); flex: 1; display: flex; flex-direction: column;}
         
-        /* Реакции в лайтбоксе */
         .react-row { display: flex; justify-content: center; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;}
-        .react-btn { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); padding: 10px 25px; border-radius: 30px; color: var(--text-muted); font-size: 18px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-family: 'Outfit'; font-weight: 600;}
+        .react-btn { background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05); padding: 10px 25px; border-radius: 30px; color: var(--text-muted); font-size: 18px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 600;}
         .react-btn:hover { background: rgba(255,255,255,0.05); color: white; }
         .react-btn.active-heart { border-color: var(--primary); color: var(--primary); box-shadow: inset 0 0 15px rgba(255,0,127,0.2); }
         .react-btn.active-fire { border-color: #ff9f43; color: #ff9f43; box-shadow: inset 0 0 15px rgba(255,159,67,0.2); }
 
-        /* ===== КОММЕНТАРИИ (С ВЕТКАМИ) ===== */
         .comments-list { max-height: 350px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px;}
         .comments-list::-webkit-scrollbar { width: 6px; }
         .comments-list::-webkit-scrollbar-thumb { background: var(--input-bg); border-radius: 3px; }
-        .comments-list::-webkit-scrollbar-thumb:hover { background: var(--primary); }
         
-        .comment-item { display: flex; gap: 15px; padding: 15px; background: var(--comment-bg); border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02); position: relative;}
+        .comment-item { display: flex; gap: 15px; padding: 15px; background: var(--comment-bg); border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02);}
         .comment-item.is-reply { margin-left: 40px; border-left: 3px solid var(--primary); background: rgba(255,0,127,0.02); }
         .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
         .comment-body { flex: 1; }
@@ -168,19 +132,15 @@
         .comment-author { font-weight: 700; font-size: 14px; color: #fff; }
         .comment-author.admin-name { color: var(--primary); text-shadow: 0 0 5px rgba(255,0,127,0.5); }
         .comment-text { font-size: 15px; line-height: 1.5; color: #ccc; }
-        
         .comment-actions { display: flex; gap: 15px; margin-top: 8px; font-size: 12px; color: var(--text-muted); font-weight: 600;}
-        .c-action { cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
+        .c-action { cursor: pointer; transition: 0.2s; }
         .c-action:hover { color: white; }
         .c-action.liked { color: var(--primary); }
 
-        .comment-form { display: flex; flex-direction: column; gap: 10px; background: var(--comment-bg); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);}
+        .comment-form { display: flex; flex-direction: column; gap: 10px; background: var(--comment-bg); padding: 15px; border-radius: 12px;}
         .reply-badge { display: none; align-items: center; justify-content: space-between; font-size: 12px; color: var(--primary); background: rgba(255,0,127,0.1); padding: 5px 10px; border-radius: 6px; font-weight: bold;}
-        .comment-input { flex: 1; padding: 12px; background: var(--input-bg); border: 1px solid transparent; border-radius: 8px; color: white; font-family: 'Outfit'; resize: none; outline: none; transition: 0.3s;}
-        .comment-input:focus { border-color: rgba(255,255,255,0.1); }
-        .send-row { display: flex; justify-content: flex-end; }
-
-        .auth-overlay-msg { text-align: center; padding: 20px; background: rgba(255,0,127,0.05); border: 1px dashed rgba(255,0,127,0.3); border-radius: 12px; color: var(--text-muted); }
+        .comment-input { flex: 1; padding: 12px; background: var(--input-bg); border: none; border-radius: 8px; color: white; resize: none; outline: none; font-family: 'Outfit';}
+        .auth-overlay-msg { text-align: center; padding: 20px; border: 1px dashed rgba(255,0,127,0.3); border-radius: 12px; color: var(--text-muted); }
         .auth-overlay-msg a { color: var(--primary); cursor: pointer; font-weight: bold; }
 
         .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -189,10 +149,8 @@
         @media (max-width: 768px) {
             header { padding: 20px; }
             .gallery-wrapper { padding: 20px; }
-            .site-info h1 { font-size: 28px; }
-            .header-top { flex-direction: column; gap: 15px; align-items: center; text-align: center;}
+            .header-top { flex-direction: column; gap: 15px; text-align: center;}
             .branding-row { flex-direction: column; }
-            .comment-item.is-reply { margin-left: 20px; }
             .gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;}
             .art-card-img { height: 200px; }
         }
@@ -203,10 +161,9 @@
     <header>
         <div class="header-top">
             <div class="branding-row">
-                <img src="avatar.jpg" alt="Габриэль" class="site-avatar" onerror="this.src='https://placehold.co/150x150/ff007f/050505?text=G'">
+                <img src="avatar.jpg" id="mainAvatar" class="site-avatar" onerror="this.src='https://placehold.co/150x150/ff007f/050505?text=G'">
                 <div class="site-info">
                     <h1>Габриэль</h1>
-                    <p>Neon / Dark / Art</p>
                 </div>
             </div>
             <div class="auth-zone" id="authZone">
@@ -214,22 +171,8 @@
             </div>
         </div>
         <div class="tabs" id="tabsContainer">
-            <button class="tab-btn active" id="tab-safe">Галерея</button>
-            <button class="tab-btn" id="tab-18plus">Раздел 18+</button>
-        </div>
+            </div>
     </header>
-
-    <div id="admin-panel">
-        <h3 style="margin-top:0; color: #fff;">Студия: Загрузка арта</h3>
-        <div class="admin-controls">
-            <input type="text" id="upload-url" class="admin-input" placeholder="Прямая ссылка (URL)..." style="flex: 2;">
-            <select id="upload-category" class="admin-input" style="flex: 1;">
-                <option value="safe">Обычный арт (Safe)</option>
-                <option value="18plus">Арт 18+ (NSFW)</option>
-            </select>
-            <button class="btn btn-primary" id="btn-upload">Опубликовать</button>
-        </div>
-    </div>
 
     <div class="gallery-wrapper" id="galleryWrapper">
         <div class="gallery" id="gallery">
@@ -241,7 +184,7 @@
         <div class="modal-content">
             <h2 style="color: var(--primary);">🔞 Контент 18+</h2>
             <p>Этот раздел содержит NSFW материалы. Подтвердите, что вам исполнилось 18 лет.</p>
-            <div class="btn-group">
+            <div style="display: flex; gap:10px; justify-content:center; margin-top:20px;">
                 <button class="btn btn-primary" id="btnAgree">Мне есть 18 лет</button>
                 <button class="btn btn-outline" id="btnCancel">Уйти</button>
             </div>
@@ -274,9 +217,43 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modalAdmin">
+        <div class="modal-content" style="max-width: 600px;">
+            <button class="modal-close" id="btnCloseAdmin">✕</button>
+            <h2>Панель управления</h2>
+            
+            <div class="admin-section">
+                <h3>🖼 Добавить арт</h3>
+                <input type="text" id="upload-url" class="admin-input" placeholder="Прямая ссылка (URL)...">
+                <div style="display:flex; gap:10px;">
+                    <select id="upload-category" class="admin-input" style="margin-bottom:0; flex:1;"></select>
+                    <button class="btn btn-primary" id="btn-upload">Опубликовать</button>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>📂 Управление разделами</h3>
+                <div class="tab-list-admin" id="adminTabsList"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="new-tab-name" class="admin-input" style="margin-bottom:0; flex:1;" placeholder="Название нового раздела...">
+                    <button class="btn btn-outline" id="btn-add-tab">Добавить</button>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h3>👤 Сменить аватарку</h3>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="avatar-url" class="admin-input" style="margin-bottom:0; flex:1;" placeholder="Прямая ссылка на фото...">
+                    <button class="btn btn-outline" id="btn-save-avatar">Сохранить</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modalArt">
         <div class="modal-content art-view-modal">
-            <button class="modal-close" style="top:15px;right:15px; z-index:100; background:rgba(0,0,0,0.5);" id="btnCloseArt">✕</button>
+            <button class="modal-close" id="btnCloseArt" style="background:rgba(0,0,0,0.5);">✕</button>
             <div class="art-view-img-wrap">
                 <img class="art-image" id="artViewImg" src="">
             </div>
@@ -285,7 +262,6 @@
                     <button class="react-btn" id="btn-like">🤍 <span id="lb-hearts">0</span></button>
                     <button class="react-btn" id="btn-fire">🔥 <span id="lb-fires">0</span></button>
                 </div>
-
                 <div class="comments-section">
                     <div class="comments-list" id="commentsList"></div>
                     <div id="commentFormWrap"></div>
@@ -299,9 +275,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc, updateDoc, query, where, orderBy, serverTimestamp, setDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, getDocs, addDoc, deleteDoc, updateDoc, query, where, orderBy, setDoc, arrayUnion, arrayRemove, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // === FIREBASE ===
         const firebaseConfig = {
             apiKey: "AIzaSyC_ztsyKmGRriSJ_iJlgTJCUq_AvxOqHOM",
             authDomain: "lilyshelte.firebaseapp.com",
@@ -322,13 +297,20 @@
         let isLoginMode = true;
         let artsArray = [];
         let currentArt = null;
-        let replyingToId = null; // ID коммента, на который отвечаем
+        let replyingToId = null; 
+        
+        let baseTabs = [
+            { id: 'safe', name: 'Галерея', is18plus: false },
+            { id: '18plus', name: 'Раздел 18+ 🔒', is18plus: true }
+        ];
+        let allTabs = [...baseTabs];
 
-        // === ЭЛЕМЕНТЫ ===
         const modalAuth = document.getElementById('modalAuth');
         const modalArt = document.getElementById('modalArt');
+        const modalAdmin = document.getElementById('modalAdmin');
         const gallery = document.getElementById('gallery');
         const galleryWrapper = document.getElementById('galleryWrapper');
+        const tabsContainer = document.getElementById('tabsContainer');
 
         function showToast(msg, type = 'info') {
             const t = document.createElement('div');
@@ -338,7 +320,54 @@
             setTimeout(() => t.remove(), 3000);
         }
 
-        // === АВТОРИЗАЦИЯ (СТРОГАЯ, БЕЗ ГОСТЕЙ) ===
+        // === ЗАГРУЗКА НАСТРОЕК ПРОФИЛЯ (Аватар) ===
+        async function loadProfileSettings() {
+            try {
+                const docSnap = await getDoc(doc(db, "settings", "profile"));
+                if(docSnap.exists() && docSnap.data().avatarUrl) {
+                    document.getElementById('mainAvatar').src = docSnap.data().avatarUrl;
+                }
+            } catch(e) {}
+        }
+        loadProfileSettings();
+
+        // === ЗАГРУЗКА И РЕНДЕР ТАБОВ ===
+        async function loadTabs() {
+            try {
+                const snap = await getDocs(collection(db, "custom_tabs"));
+                let customTabs = [];
+                snap.forEach(d => customTabs.push({ id: d.id, name: d.data().name, is18plus: false }));
+                allTabs = [...baseTabs, ...customTabs];
+            } catch(e) {}
+            renderTabs();
+            renderAdminTabs();
+            renderUploadCategories();
+        }
+
+        function renderTabs() {
+            tabsContainer.innerHTML = '';
+            allTabs.forEach(tab => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${tab.id === currentTab ? 'active' : ''}`;
+                btn.innerText = tab.name;
+                btn.onclick = () => switchTab(tab);
+                tabsContainer.appendChild(btn);
+            });
+        }
+
+        function switchTab(tab) {
+            currentTab = tab.id;
+            renderTabs();
+            loadGallery();
+            if(tab.is18plus && !isAdultUser) {
+                galleryWrapper.classList.add('blurred-gallery');
+                document.getElementById('modalAgreement').classList.add('active');
+            } else {
+                galleryWrapper.classList.remove('blurred-gallery');
+            }
+        }
+
+        // === АВТОРИЗАЦИЯ ===
         document.getElementById('btnOpenAuth').onclick = () => { isLoginMode = true; updateAuthForm(); modalAuth.classList.add('active'); };
         document.getElementById('btnCloseAuth').onclick = () => modalAuth.classList.remove('active');
         document.getElementById('authSwitchLink').onclick = () => { isLoginMode = !isLoginMode; updateAuthForm(); };
@@ -358,16 +387,14 @@
             const err = document.getElementById('authError'); err.style.display = 'none';
 
             try {
-                if (isLoginMode) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else {
+                if (isLoginMode) { await signInWithEmailAndPassword(auth, email, password); } 
+                else {
                     if (!nickname) { err.textContent = 'Укажи никнейм'; err.style.display = 'block'; return; }
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     await updateProfile(cred.user, { displayName: nickname });
                     await setDoc(doc(db, 'users', cred.user.uid), { admin: false, name: nickname });
                 }
-                modalAuth.classList.remove('active');
-                showToast(isLoginMode ? 'С возвращением!' : 'Аккаунт создан!');
+                modalAuth.classList.remove('active'); showToast(isLoginMode ? 'С возвращением!' : 'Аккаунт создан!');
             } catch (e) { err.textContent = 'Ошибка данных. Проверь почту и пароль.'; err.style.display = 'block'; }
         };
 
@@ -379,24 +406,48 @@
                     const uDoc = await getDoc(doc(db, 'users', user.uid));
                     if (uDoc.exists()) isAdmin = uDoc.data().admin === true;
                 } catch(e) {}
+                
+                let adminBtnHTML = isAdmin ? `<span class="admin-badge" id="btnOpenAdmin">⚙ Настройки</span>` : '';
                 zone.innerHTML = `
                     <div class="user-badge">
                         <span class="username">${user.displayName || "User"}</span>
-                        ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}
+                        ${adminBtnHTML}
                     </div>
                     <button class="btn btn-outline btn-sm" id="btnLogout">Выйти</button>
                 `;
                 document.getElementById('btnLogout').onclick = () => signOut(auth);
-                document.getElementById('admin-panel').style.display = isAdmin ? 'block' : 'none';
+                if(isAdmin) document.getElementById('btnOpenAdmin').onclick = () => modalAdmin.classList.add('active');
             } else {
                 zone.innerHTML = `<button class="btn btn-primary btn-sm" id="btnOpenAuth">Вход / Рега</button>`;
                 document.getElementById('btnOpenAuth').onclick = () => { isLoginMode = true; updateAuthForm(); modalAuth.classList.add('active'); };
-                document.getElementById('admin-panel').style.display = 'none';
             }
             loadGallery();
         });
 
         // === АДМИНКА ===
+        document.getElementById('btnCloseAdmin').onclick = () => modalAdmin.classList.remove('active');
+
+        // Смена аватарки
+        document.getElementById('btn-save-avatar').onclick = async () => {
+            const url = document.getElementById('avatar-url').value.trim();
+            if(!url) return;
+            await setDoc(doc(db, "settings", "profile"), { avatarUrl: url }, { merge: true });
+            document.getElementById('mainAvatar').src = url;
+            document.getElementById('avatar-url').value = '';
+            showToast('Аватар обновлен!', 'success');
+        };
+
+        // Загрузка арта (выпадающий список динамический)
+        function renderUploadCategories() {
+            const sel = document.getElementById('upload-category');
+            sel.innerHTML = '';
+            allTabs.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id; opt.innerText = t.name;
+                sel.appendChild(opt);
+            });
+        }
+
         document.getElementById('btn-upload').onclick = async () => {
             const url = document.getElementById('upload-url').value.trim();
             const type = document.getElementById('upload-category').value;
@@ -405,7 +456,35 @@
                 await addDoc(collection(db, "artworks"), { url, type, hearts: 0, fires: 0, commentsCount: 0, heartedBy: [], firedBy: [], artistLiked: false, createdAt: Date.now() });
                 document.getElementById('upload-url').value = '';
                 showToast('Опубликовано!'); loadGallery();
-            } catch (e) { showToast('Ошибка публикации', 'error'); }
+            } catch (e) { showToast('Ошибка', 'error'); }
+        };
+
+        // Управление табами
+        function renderAdminTabs() {
+            const list = document.getElementById('adminTabsList'); list.innerHTML = '';
+            allTabs.forEach(t => {
+                const isBase = (t.id === 'safe' || t.id === '18plus');
+                list.innerHTML += `
+                    <div class="tab-item-admin">
+                        <span>${t.name} ${isBase ? '(Базовый)' : ''}</span>
+                        ${!isBase ? `<button onclick="deleteTab('${t.id}')">Удалить</button>` : '<span>🔒</span>'}
+                    </div>`;
+            });
+        }
+
+        document.getElementById('btn-add-tab').onclick = async () => {
+            const name = document.getElementById('new-tab-name').value.trim();
+            if(!name) return;
+            await addDoc(collection(db, "custom_tabs"), { name });
+            document.getElementById('new-tab-name').value = '';
+            await loadTabs(); showToast('Раздел создан!');
+        };
+
+        window.deleteTab = async (id) => {
+            if(!confirm('Точно удалить раздел?')) return;
+            await deleteDoc(doc(db, "custom_tabs", id));
+            if(currentTab === id) switchTab(baseTabs[0]);
+            await loadTabs(); showToast('Удалено');
         };
 
         // === ГАЛЕРЕЯ И СОРТИРОВКА ===
@@ -456,13 +535,7 @@
             } catch (e) { gallery.innerHTML = '<div class="empty-state">Ошибка загрузки.</div>'; }
         }
 
-        // === ВКЛАДКИ ===
-        document.getElementById('tab-safe').onclick = () => { currentTab = 'safe'; document.getElementById('tab-safe').classList.add('active'); document.getElementById('tab-18plus').classList.remove('active'); galleryWrapper.classList.remove('blurred-gallery'); loadGallery(); };
-        document.getElementById('tab-18plus').onclick = () => { 
-            if(!currentUser) { isLoginMode = true; updateAuthForm(); modalAuth.classList.add('active'); return; }
-            currentTab = '18plus'; document.getElementById('tab-18plus').classList.add('active'); document.getElementById('tab-safe').classList.remove('active'); loadGallery();
-            if(!isAdultUser) { galleryWrapper.classList.add('blurred-gallery'); document.getElementById('modalAgreement').classList.add('active'); }
-        };
+        // === МОДАЛКИ (Возраст) ===
         document.getElementById('btnAgree').onclick = () => { localStorage.setItem('isAdultUser', 'true'); isAdultUser = true; document.getElementById('modalAgreement').classList.remove('active'); galleryWrapper.classList.remove('blurred-gallery'); };
         document.getElementById('btnCancel').onclick = () => { document.getElementById('modalAgreement').classList.remove('active'); document.getElementById('tab-safe').click(); };
 
@@ -491,7 +564,7 @@
         }
         document.getElementById('btnCloseArt').onclick = () => { modalArt.classList.remove('active'); replyingToId = null; };
 
-        // === УМНЫЕ РЕАКЦИИ (Взаимоисключающие) ===
+        // === УМНЫЕ РЕАКЦИИ ===
         function updateReactionButtons() {
             const btnLike = document.getElementById('btn-like');
             const btnFire = document.getElementById('btn-fire');
@@ -522,12 +595,12 @@
             let fired = (currentArt.firedBy || []).includes(uid);
 
             if(type === 'heart') {
-                if(hearted) { // Снимаем лайк
+                if(hearted) { 
                     currentArt.hearts--; currentArt.heartedBy = currentArt.heartedBy.filter(id => id !== uid);
                     let updateData = { hearts: increment(-1), heartedBy: arrayRemove(uid) };
                     if(isAdmin) { currentArt.artistLiked = false; updateData.artistLiked = false; }
                     await updateDoc(artRef, updateData);
-                } else { // Ставим лайк
+                } else { 
                     currentArt.hearts++; currentArt.heartedBy.push(uid);
                     let updateData = { hearts: increment(1), heartedBy: arrayUnion(uid) };
                     if(fired) { currentArt.fires--; currentArt.firedBy = currentArt.firedBy.filter(id => id !== uid); updateData.fires = increment(-1); updateData.firedBy = arrayRemove(uid); }
@@ -535,24 +608,24 @@
                     await updateDoc(artRef, updateData);
                 }
             } else if (type === 'fire') {
-                if(fired) { // Снимаем огонь
+                if(fired) { 
                     currentArt.fires--; currentArt.firedBy = currentArt.firedBy.filter(id => id !== uid);
                     await updateDoc(artRef, { fires: increment(-1), firedBy: arrayRemove(uid) });
-                } else { // Ставим огонь
+                } else { 
                     currentArt.fires++; currentArt.firedBy.push(uid);
                     let updateData = { fires: increment(1), firedBy: arrayUnion(uid) };
                     if(hearted) { currentArt.hearts--; currentArt.heartedBy = currentArt.heartedBy.filter(id => id !== uid); updateData.hearts = increment(-1); updateData.heartedBy = arrayRemove(uid); }
-                    if(isAdmin && hearted) { currentArt.artistLiked = false; updateData.artistLiked = false; } // Художник убрал лайк ради огня
+                    if(isAdmin && hearted) { currentArt.artistLiked = false; updateData.artistLiked = false; } 
                     await updateDoc(artRef, updateData);
                 }
             }
-            updateReactionButtons(); loadGallery(); // обновим галерею на фоне
+            updateReactionButtons(); loadGallery(); 
         }
 
         document.getElementById('btn-like').onclick = () => toggleReact('heart');
         document.getElementById('btn-fire').onclick = () => toggleReact('fire');
 
-        // === КОММЕНТЫ (Иерархия и Лайки) ===
+        // === КОММЕНТЫ ===
         async function sendComment() {
             const input = document.getElementById('c-input');
             const text = input.value.trim();
@@ -576,7 +649,6 @@
             let allComments = [];
             snap.forEach(d => { let c = d.data(); c.id = d.id; allComments.push(c); });
 
-            // Строим дерево
             let topLevel = allComments.filter(c => !c.parentId);
             let replies = allComments.filter(c => c.parentId);
 
@@ -594,7 +666,7 @@
             
             let isLiked = currentUser && (c.likedBy || []).includes(currentUser.uid);
             let likeClass = isLiked ? 'c-action liked' : 'c-action';
-            let adminClass = (c.user === 'Габриэль' || c.user === 'Admin') ? 'admin-name' : ''; // Если имя Габриэль, светится
+            let adminClass = (c.user === 'Габриэль' || c.user === 'Admin') ? 'admin-name' : '';
 
             div.innerHTML = `
                 <img class="comment-avatar" src="https://placehold.co/40x40/ff007f/111?text=${c.user[0]}">
@@ -603,7 +675,7 @@
                         <span class="comment-author ${adminClass}">${c.user}</span>
                         ${isAdmin ? `<span class="c-action" style="color:red" data-del="${c.id}">✕</span>` : ''}
                     </div>
-                    <div class="comment-text">${isReply ? `<span style="color:var(--primary);">@${c.user}</span> ` : ''}${c.text}</div>
+                    <div class="comment-text">${isReply ? `<span style="color:var(--primary);">@Ответ</span> ` : ''}${c.text}</div>
                     <div class="comment-actions">
                         <span class="${likeClass}" data-like="${c.id}">❤️ ${c.likes || 0}</span>
                         ${!isReply && currentUser ? `<span class="c-action" data-reply="${c.id}">Ответить</span>` : ''}
@@ -611,8 +683,7 @@
                 </div>
             `;
 
-            // Лайк коммента
-            div.querySelector(`[data-like]`).onclick = async (e) => {
+            div.querySelector(`[data-like]`).onclick = async () => {
                 if(!currentUser) return;
                 const cRef = doc(db, "artworks", currentArt.id, "comments", c.id);
                 if(isLiked) { await updateDoc(cRef, { likes: increment(-1), likedBy: arrayRemove(currentUser.uid) }); }
@@ -620,7 +691,6 @@
                 loadComments(currentArt.id);
             };
 
-            // Ответ на коммент
             if(!isReply && currentUser) {
                 div.querySelector(`[data-reply]`).onclick = () => {
                     replyingToId = c.id;
@@ -631,7 +701,6 @@
                 };
             }
 
-            // Удаление
             if(isAdmin) {
                 div.querySelector(`[data-del]`).onclick = async () => {
                     await deleteDoc(doc(db, "artworks", currentArt.id, "comments", c.id));
@@ -645,8 +714,10 @@
         window.onclick = (e) => {
             if (e.target == modalAuth) modalAuth.classList.remove('active');
             if (e.target == modalArt) { modalArt.classList.remove('active'); replyingToId = null; }
+            if (e.target == modalAdmin) modalAdmin.classList.remove('active');
         }
 
+        loadTabs();
     </script>
 </body>
 </html>
