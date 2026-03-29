@@ -6,11 +6,11 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-
 
 const firebaseConfig = {
     apiKey: "AIzaSyC_ztsyKmGRriSJ_iJlgTJCUq_AvxOqHOM",
-    authDomain: "ВАШ_PROJECT.firebaseapp.com",
-    projectId: "ВАШ_PROJECT_ID",
-    storageBucket: "ВАШ_PROJECT.appspot.com",
-    messagingSenderId: "ВАШ_SENDER_ID",
-    appId: "ВАШ_APP_ID"
+    authDomain: "lilyshelte.firebaseapp.com",
+    projectId: "lilyshelte",
+    storageBucket: "lilyshelte.firebasestorage.app",
+    messagingSenderId: "778800933672",
+    appId: "1:778800933672:web:c8be45ac174157254bfe1d"
 };
 
 const app = initializeApp(firebaseConfig);
