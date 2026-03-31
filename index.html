@@ -68,7 +68,7 @@
         
         .art-card { background: var(--card-bg); border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); animation: fadeIn 0.5s backwards; }
         .art-card:hover { transform: translateY(-8px); border-color: rgba(162,0,255,0.6); box-shadow: 0 15px 35px rgba(0,0,0,0.9), 0 0 20px rgba(162,0,255,0.25); }
-        .art-card-img { width: 100%; height: 380px; object-fit: cover; transition: 0.6s; display: block; pointer-events: none; } /* Запрет перетаскивания (CSS) */
+        .art-card-img { width: 100%; height: 380px; object-fit: cover; transition: 0.6s; display: block; pointer-events: none; }
         .art-card:hover .art-card-img { transform: scale(1.06); }
         
         .art-card-info { padding: 20px 10px 15px; background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, transparent 100%); position: absolute; bottom: 0; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px;}
@@ -115,7 +115,7 @@
         /* --- МОДАЛКА ПРОСМОТРА АРТА --- */
         .art-view-modal { max-width: 1100px; padding: 0; overflow: hidden; display: flex; flex-direction: column; background: var(--bg); border: 1px solid rgba(162,0,255,0.15);}
         .art-view-img-wrap { width: 100%; background: #000; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative;}
-        .art-view-modal .art-image { width: 100%; max-height: 75vh; object-fit: contain; display: block; pointer-events: none; } /* Запрет сохранения ПКМ */
+        .art-view-modal .art-image { width: 100%; max-height: 75vh; object-fit: contain; display: block; pointer-events: none; }
         
         .mobile-toggle-btn { display: none; }
         
@@ -247,7 +247,7 @@
                 <p>Вся техническая часть была спроектирована и написана мной с нуля, включая:</p>
                 <ul style="padding-left: 20px; color: var(--text-muted); margin-bottom: 15px;">
                     <li style="margin-bottom: 8px;"><strong>Frontend (Внешний вид):</strong> Уникальный дизайн, анимации, адаптация под телефоны и весь интерфейс, с которым вы взаимодействуете.</li>
-                    <li style="margin-bottom: 8px;"><strong>Backend (Серверная логика):</strong> Настройка серверов, сохранение артов, умные алгоритмы лайков, сортировки, защита от скачивания и система комментариев.</li>
+                    <li style="margin-bottom: 8px;"><strong>Backend (Серверная логика):</strong> Настройка серверов, сохранение артов, умные алгоритмы лайков, сортировки, защита от скачивания, подсчет статистики и система комментариев.</li>
                 </ul>
 
                 <ul style="padding-left: 20px; color: var(--text-muted);">
@@ -346,7 +346,7 @@
                 <div class="react-row">
                     <button class="react-btn" id="btn-like">🤍 <span id="lb-hearts">0</span></button>
                     <button class="react-btn" id="btn-fire">🔥 <span id="lb-fires">0</span></button>
-                    <button class="btn btn-outline" id="btn-download" style="border-radius: 30px; font-weight: 800;">📥 Скачать</button>
+                    <button class="btn btn-outline" id="btn-download" style="border-radius: 30px; font-weight: 800; border-color: rgba(255,255,255,0.1);">📥 Скачать</button>
                 </div>
                 <div class="comments-section">
                     <div class="comments-list" id="commentsList"></div>
@@ -434,16 +434,17 @@
             return `${years} ${plural(years, 'год', 'года', 'лет')} назад`;
         }
 
-        // === СКАЧИВАНИЕ С ДВОЙНЫМ WATERMARK ===
-        document.getElementById('btn-download').onclick = () => {
+        // === СКАЧИВАНИЕ С ОГРОМНЫМ WATERMARK И СТАТИСТИКОЙ ===
+        document.getElementById('btn-download').onclick = async () => {
             if(!currentUser) return showToast("Войдите в аккаунт, чтобы скачать арт!", "error");
             
+            const artRef = doc(db, "artworks", currentArt.id);
             showToast("Подготовка файла...");
             const img = new Image();
-            img.crossOrigin = "anonymous";
+            img.crossOrigin = "anonymous"; // Важно для CORS
             img.src = currentArt.url;
             
-            img.onload = () => {
+            img.onload = async () => {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 canvas.width = img.width;
@@ -452,35 +453,52 @@
                 // Отрисовка оригинального арта
                 ctx.drawImage(img, 0, 0);
                 
-                // Настройки тени для читаемости на любом фоне
-                ctx.shadowColor = "rgba(0, 0, 0, 0.9)";
-                ctx.shadowBlur = 10;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
+                // Настройки тени для читаемости на любом фоне (сделал жирнее)
+                ctx.shadowColor = "rgba(0, 0, 0, 1)";
+                ctx.shadowBlur = 15;
+                ctx.shadowOffsetX = 4;
+                ctx.shadowOffsetY = 4;
                 ctx.textAlign = "right";
                 
-                // СТРОКА 1: lilyshelte (Крупно)
-                const fontSize1 = Math.max(30, canvas.width / 30);
+                // === СТРОКА 1: lilyshelte (ОЧЕНЬ КРУПНО) ===
+                // Размер зависит от ширины картинки, но минимум 60px
+                const fontSize1 = Math.max(60, canvas.width / 15); 
                 ctx.font = `bold ${fontSize1}px Outfit, sans-serif`;
-                ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
-                ctx.fillText("lilyshelte", canvas.width - 20, canvas.height - 30 - (canvas.width / 50));
+                ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
                 
-                // СТРОКА 2: lilyshelte.vercel.app (Мельче)
-                const fontSize2 = Math.max(16, canvas.width / 50);
-                ctx.font = `${fontSize2}px Outfit, sans-serif`;
-                ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
-                ctx.fillText("lilyshelte.vercel.app", canvas.width - 20, canvas.height - 20);
+                // Позиция: чуть выше нижнего края, с учетом второй строки
+                const yPos1 = canvas.height - (fontSize1 * 0.8) - 20;
+                ctx.fillText("lilyshelte", canvas.width - 25, yPos1);
+                
+                // === СТРОКА 2: lilyshelte.vercel.app (ТОЖЕ КРУПНО) ===
+                const fontSize2 = Math.max(30, canvas.width / 30);
+                ctx.font = `600 ${fontSize2}px Outfit, sans-serif`;
+                ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+                
+                // Позиция: самый низ
+                ctx.fillText("lilyshelte.vercel.app", canvas.width - 25, canvas.height - 25);
                 
                 // Генерация ссылки и скачивание
                 const link = document.createElement('a');
                 link.download = `Gabriel_Art_${Date.now()}.jpg`;
                 link.href = canvas.toDataURL("image/jpeg", 0.95);
                 link.click();
-                showToast("Скачивание началось!", "success");
+
+                // === ОБНОВЛЕНИЕ СТАТИСТИКИ СКАЧИВАНИЙ ===
+                try {
+                    await updateDoc(artRef, { downloadsCount: increment(1) });
+                    // Обновляем локально, чтобы сразу увидеть
+                    currentArt.downloadsCount = (currentArt.downloadsCount || 0) + 1;
+                    showToast("Скачивание началось! Счетчик обновлен.", "success");
+                    // Перерисовываем галерею в фоне
+                    loadGallery(); 
+                } catch(e) {
+                    console.error("Ошибка обновления статистики:", e);
+                }
             };
             
             img.onerror = () => {
-                showToast("Ошибка сервера картинок (CORS).", "error");
+                showToast("Ошибка загрузки изображения. Возможно, ссылка битая.", "error");
             };
         };
 
@@ -609,7 +627,8 @@
             const type = document.getElementById('upload-category').value;
             if(!url) return showToast('Вставьте ссылку!', 'error');
             try {
-                await addDoc(collection(db, "artworks"), { url, type, hearts: 0, fires: 0, commentsCount: 0, heartedBy: [], firedBy: [], artistLiked: false, createdAt: Date.now() });
+                // Инициализируем downloadsCount: 0 при создании
+                await addDoc(collection(db, "artworks"), { url, type, hearts: 0, fires: 0, commentsCount: 0, downloadsCount: 0, heartedBy: [], firedBy: [], artistLiked: false, createdAt: Date.now() });
                 document.getElementById('upload-url').value = '';
                 showToast('Опубликовано!'); loadGallery();
             } catch (e) { showToast('Ошибка', 'error'); }
@@ -655,6 +674,7 @@
                 snap.forEach(d => {
                     let art = d.data(); art.id = d.id;
                     art.hearts = art.hearts || 0; art.fires = art.fires || 0;
+                    art.downloadsCount = art.downloadsCount || 0; // На всякий случай обрабатываем старые арты
                     art.score = art.hearts + (art.fires * 0.5); 
                     artsArray.push(art);
                 });
@@ -677,6 +697,7 @@
                                 <span class="stat-badge">${heartIcon} ${art.hearts}</span> 
                                 <span class="stat-badge">🔥 ${art.fires}</span> 
                                 <span class="stat-badge">💬 ${art.commentsCount || 0}</span>
+                                <span class="stat-badge">📥 ${art.downloadsCount}</span>
                             </div>
                             <div class="time-badge" style="margin-top:8px;">🕒 ${timeAgo(art.createdAt)}</div>
                         </div>
@@ -695,7 +716,7 @@
 
         // === МОДАЛКИ (Возраст) ===
         document.getElementById('btnAgree').onclick = () => { localStorage.setItem('isAdultUser', 'true'); isAdultUser = true; document.getElementById('modalAgreement').classList.remove('active'); galleryWrapper.classList.remove('blurred-gallery'); };
-        document.getElementById('btnCancel').onclick = () => { document.getElementById('modalAgreement').classList.remove('active'); document.getElementById('tab-safe').click(); };
+        document.getElementById('btnCancel').onclick = () => { document.getElementById('agreementOverlay').classList.remove('active'); document.getElementById('modalAgreement').classList.remove('active'); document.getElementById('tab-safe').click(); };
 
         // === ПРОСМОТР АРТА ===
         mobileToggleBtn.onclick = function() {
