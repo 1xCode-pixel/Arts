@@ -154,11 +154,6 @@
         .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: var(--card-bg); color: white; padding: 16px 24px; border-radius: 12px; border: 1px solid rgba(162,0,255,0.4); box-shadow: var(--glow); animation: fadeIn 0.3s ease-out; font-weight: 700; font-size: 14px;}
 
-        /* --- О САЙТЕ --- */
-        .about-text p { margin-bottom: 10px; }
-        .about-text ul { list-style: none; padding: 0; margin: 0; }
-        .about-text li { margin-bottom: 8px; }
-
         @media (max-width: 768px) {
             header { padding: 20px; }
             .gallery-wrapper { padding: 20px; }
@@ -203,22 +198,27 @@
     </div>
 
     <div class="modal-overlay" id="modalAbout">
-        <div class="modal-content" style="max-width: 450px;">
+        <div class="modal-content" style="max-width: 550px; text-align: left;">
             <button class="modal-close" id="btnCloseAbout">✕</button>
-            <h2 style="color: var(--primary);">О проекте</h2>
-            <div class="about-text" style="text-align: left; margin-top: 20px; line-height: 1.8; color: #ccc; font-size: 15px;">
-                <p>Все права на контент и арты переданы <strong>Габриэль</strong>.</p>
-                <p>Владелец и разработчик проекта: <strong style="color: var(--primary); text-shadow: var(--glow);">1xCode</strong>.</p>
-                <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-                <ul>
-                    <li>☁️ База данных: Облачная NoSQL БД</li>
-                    <li>🚀 Хостинг: Размещен на Vercel</li>
+            <h2 style="color: var(--primary); text-align: center; margin-bottom: 25px;">О проекте</h2>
+            
+            <div style="color: #ccc; font-size: 15px; line-height: 1.6;">
+                <h3 style="color: #fff; font-size: 18px; margin-bottom: 10px;">🎨 Авторские права</h3>
+                <p style="margin-top: 0;">Все права на визуальный контент, иллюстрации и персонажей, представленных в этой галерее, полностью принадлежат автору — <strong style="color: var(--primary); text-shadow: var(--glow);">Габриэль</strong>. Любое копирование или коммерческое использование материалов без разрешения художника строго запрещено.</p>
+                
+                <h3 style="color: #fff; font-size: 18px; margin-top: 25px; margin-bottom: 10px;">💻 Техническая часть</h3>
+                <p style="margin-top: 0;">Владелец технической платформы и главный разработчик проекта — <strong>1xCode</strong>.</p>
+                <ul style="padding-left: 20px; color: var(--text-muted);">
+                    <li><strong>База данных:</strong> Защищенная облачная NoSQL БД</li>
+                    <li><strong>Хостинг:</strong> Размещено на высокоскоростных серверах Vercel</li>
                 </ul>
-                <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin: 20px 0;">
-                <p style="text-align: center; margin-bottom: 0;">
-                    Связаться с разработчиком:<br>
-                    <a href="mailto:1xcodeteam@gmail.com" style="color: var(--primary); font-weight: 800; font-size: 16px; text-decoration: none; text-shadow: var(--glow);">1xcodeteam@gmail.com</a>
-                </p>
+
+                <div style="background: rgba(162,0,255,0.05); border: 1px dashed rgba(162,0,255,0.3); border-radius: 12px; padding: 20px; margin-top: 30px; text-align: center;">
+                    <h3 style="color: #fff; font-size: 16px; margin: 0 0 10px 0;">🚀 Заказать разработку сайта</h3>
+                    <p style="font-size: 14px; margin-top: 0; color: var(--text-muted);">Понравился этот сайт? Хотите заказать современный веб-проект, крутое портфолио или интернет-магазин с уникальным дизайном?</p>
+                    <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 5px;">Свяжитесь с разработчиком:</p>
+                    <a href="mailto:1xcodeteam@gmail.com" style="display: inline-block; background: var(--primary); color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; margin-top: 10px; box-shadow: var(--glow); transition: 0.3s;">1xcodeteam@gmail.com</a>
+                </div>
             </div>
         </div>
     </div>
@@ -405,12 +405,11 @@
             } else { galleryWrapper.classList.remove('blurred-gallery'); }
         }
 
-        // === АВТОРИЗАЦИЯ ===
+        // === АВТОРИЗАЦИЯ И ИНФО ===
         document.getElementById('btnOpenAuth').onclick = () => { isLoginMode = true; updateAuthForm(); modalAuth.classList.add('active'); };
         document.getElementById('btnCloseAuth').onclick = () => modalAuth.classList.remove('active');
         document.getElementById('authSwitchLink').onclick = () => { isLoginMode = !isLoginMode; updateAuthForm(); };
 
-        // О САЙТЕ
         document.getElementById('btnAbout').onclick = () => modalAbout.classList.add('active');
         document.getElementById('btnCloseAbout').onclick = () => modalAbout.classList.remove('active');
 
@@ -758,4 +757,4 @@
         loadTabs();
     </script>
 </body>
-            </html>
+                        </html>
